@@ -1,0 +1,16 @@
+---
+# defaults file for ansible-elasticsearch
+elasticsearch_data_dir: /var/lib/elasticsearch
+elasticsearch_log_dir: /var/log/elasticsearch
+
+elasticsearch_master: True
+elasticsearch_nodes: []
+elasticsearch_minimum_master_nodes: 1
+# All values you can found at:
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-network.html
+elasticsearch_network: "_local_"
+elasticsearch_http_port: 9200
+elasticsearch_cluster_name: default
+elasticsearch_script_inline: false
+elasticsearch_script_indexed: false
+elasticsearch_script_file: false

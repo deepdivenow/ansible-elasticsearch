@@ -1,0 +1,46 @@
+---
+# tasks file for ansible-elasticsearch
+- name: Check gpg is present
+  apt:
+    name: gpg
+    state: present
+
+- name: Add ES repo key
+  apt_key:
+    id: D88E42B4
+    url:  https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: Add ES repo
+  apt_repository:
+    repo: deb https://artifacts.elastic.co/packages/6.x/apt stable main
+    state: present
+    filename: elastic-6.x
+
+- name: Install elastic search
+  apt:
+    name: "elasticsearch"
+    state: present
+    update_cache: True
+
+- name: Ensure work dirs exists
+  file:
+    name: "{{ item }}"
+    state: directory
+    recurse: True
+    owner: elasticsearch
+    group: elasticsearch
+    mode: 0770
+  with_items:
+  - "{{ elasticsearch_data_dir }}"
+  - "{{ elasticsearch_log_dir }}"
+
+- name: copy ElasicSearch config
+  template:
+    src: "elastic.yml.j2"
+    dest: "/etc/elasticsearch/elasticsearch.yml"
+    backup: True
+  notify: restart elasticsearch
+
+- name: start elasticsearch
+  service: name=elasticsearch state=started enabled=yes

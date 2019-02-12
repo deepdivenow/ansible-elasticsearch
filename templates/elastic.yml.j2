@@ -1,0 +1,47 @@
+# ======================== Elasticsearch Configuration =========================
+
+# ---------------------------------- Cluster -----------------------------------
+cluster.name: {{ elasticsearch_cluster_name }}
+
+# ------------------------------------ Node ------------------------------------
+node.name: ${HOSTNAME}
+
+# ----------------------------------- Paths ------------------------------------
+path.data: {{ elasticsearch_data_dir }}
+path.logs: {{ elasticsearch_log_dir }}
+
+# ----------------------------------- Memory -----------------------------------
+#
+# Lock the memory on startup:
+#
+#bootstrap.memory_lock: true
+#
+# Make sure that the heap size is set to about half the memory available
+# on the system and that the owner of the process is allowed to use this
+# limit.
+#
+# Elasticsearch performs poorly when the system is swapping the memory.
+#
+# ---------------------------------- Network -----------------------------------
+network.host: {{ elasticsearch_network }}
+http.port: {{ elasticsearch_http_port }}
+
+# --------------------------------- Discovery ----------------------------------
+{% if elasticsearch_nodes | length > 0 %}
+discovery.zen.ping.unicast.hosts: {{ elasticsearch_nodes | to_yaml }}
+{% endif %}
+discovery.zen.minimum_master_nodes: {{ elasticsearch_minimum_master_nodes }}
+
+# ---------------------------------- Gateway -----------------------------------
+#
+# Block initial recovery after a full cluster restart until N nodes are started:
+#
+#gateway.recover_after_nodes: 3
+#
+# For more information, consult the gateway module documentation.
+#
+# ---------------------------------- Various -----------------------------------
+#
+# Require explicit names when deleting indices:
+#
+#action.destructive_requires_name: true
